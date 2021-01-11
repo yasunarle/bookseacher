@@ -1,14 +1,21 @@
 <template>
-  <div class="book-card">
-    <span>BookCard</span>
-    <span>{{ book.title }}</span>
+  <div class="column is-one-quarter">
+    <div class="card">
+      <figure class="image">
+        <img :src="book.imageLinks.smallThumbnail" />
+      </figure>
+      <div class="content p-3">
+        <h4>{{ book.title }}</h4>
+        <h6>{{ book.publishedDate }}</h6>
+        <p>{{ description }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-// import { ref } from 'vue';
-// Types
-// import { Book } from '../types/book';
+// Utils
+import truncate from '../utils/truncate';
 
 export default {
   props: {
@@ -17,8 +24,12 @@ export default {
       required: true
     }
   },
-  setup() {
-    console.log('--- BookCard');
+  setup(props: any) {
+    const description = truncate({ str: props.book.description });
+
+    return {
+      description
+    };
   }
 };
 </script>
