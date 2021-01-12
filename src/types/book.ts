@@ -8,4 +8,6 @@ export interface Book {
   description: string;
   authors: string[];
   publishedDate: string;
+  relatedOrder: number;
+  infoLink: string;
 }

@@ -3,7 +3,7 @@ type Props = {
   n?: number;
 };
 
-function truncate({ str, n = 100 }: Props): string {
+function truncate({ str, n = 70 }: Props): string {
   return str?.length > n ? str.substr(0, n - 1) + '...' : str;
 }
 
