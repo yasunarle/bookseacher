@@ -1,6 +1,6 @@
 <template>
   <div class="app__container">
-    <div class="app__header">
+    <div class="pt-6">
       <div class="columns is-centered pt-4 is-mobile">
         <div class="field has-addons">
           <div class="control">
@@ -18,7 +18,7 @@
           </div>
           <span class="control">
             <div class="select">
-              <select v-model="selectedOpsion">
+              <select v-model="selectedOption">
                 <option>関連順</option>
                 <option>新規順</option>
               </select>
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="app__content">
+    <div class="p-5">
       <div class="columns books-container">
         <template v-for="(book, index) in sortedBooks" :key="index">
           <BookCard :book="book" />
@@ -55,31 +55,42 @@ export default {
   setup() {
     // Note: State
     const inputText = ref<string>('');
-    const selectedOpsion = ref<string>('関連順');
+    const selectedOption = ref<string>('関連順');
     const books = ref<Book[]>([]);
     // Note: Methods
-    const searchBooks = async () => {
+    const searchBooks = async (): Promise<void> => {
       if (!inputText.value) {
         return;
       }
       const _books = await getBooks(inputText.value);
       books.value = _books;
     };
+    const sortBooksNewOrder = (books: Book[]): void => {
+      books.sort((a: Book, b: Book) => {
+        if (a.publishedDate > b.publishedDate) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    };
+    const sortBooksRelation = (books: Book[]): void => {
+      books.sort((a: Book, b: Book) => {
+        if (a.relatedOrder < b.relatedOrder) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    };
     // Note: Computed
-    const sortedBooks = computed(() => {
-      if (selectedOpsion.value === '新規順') {
-        // Todo: Sort Func
-        const newOrderedBooks = books.value;
-        newOrderedBooks.sort((a: Book, b: Book) => {
-          if (a.publishedDate < b.publishedDate) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
-        console.log(' ---- new: ', newOrderedBooks);
-
-        return newOrderedBooks;
+    const sortedBooks = computed<Book[]>(() => {
+      if (selectedOption.value === '関連順') {
+        sortBooksRelation(books.value);
+        return books.value;
+      }
+      if (selectedOption.value === '新規順') {
+        sortBooksNewOrder(books.value);
       }
       return books.value;
     });
@@ -87,7 +98,7 @@ export default {
     return {
       inputText,
       sortedBooks,
-      selectedOpsion,
+      selectedOption,
       searchBooks
     };
   }
@@ -99,18 +110,15 @@ body {
   margin: 0px;
   padding: 0px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  a:hover {
+    color: seagreen;
+    cursor: pointer;
+  }
 }
 .app__container {
-  .app__header {
-    text-align: center;
-    padding: 20px 0px;
-  }
-  .app__content {
-    padding: 20px;
-    .books-container {
-      padding: 40px 0px;
-      flex-wrap: wrap;
-    }
+  .books-container {
+    padding: 60px 0px;
+    flex-wrap: wrap;
   }
 }
 </style>
