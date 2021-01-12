@@ -14,8 +14,12 @@ const getBooks = async (keyword: string): Promise<Book[]> => {
     const res = await axios.get(url, { params });
     const seachedBooks = res.data.items as SeachedBook[];
     const _books = [] as Book[];
-    seachedBooks.map(seachedBook => {
-      _books.push(seachedBook.volumeInfo);
+    seachedBooks.map((seachedBook, index) => {
+      const _book = {
+        ...seachedBook.volumeInfo,
+        relatedOrder: index
+      };
+      _books.push(_book);
     });
     return _books;
   } catch (error) {
